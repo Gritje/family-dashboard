@@ -24,7 +24,7 @@ class Appointments(BoxLayout):
         
         self.popupLayout = BoxLayout(orientation = 'vertical')        
         self.datetimePicker = DatetimePicker()
-        self.appointmentTitleInput = TextInput(text='Neuer Termin', multiline=False)
+        self.appointmentTitleInput = TextInput(text='Neuer Termin:', multiline=False)
         self.memberLayout = BoxLayout(orientation='horizontal')       
         self.memberButton1 = ToggleButton(text='Papa', group='members', state='down')
         self.memberButton2 = ToggleButton(text='Mama', group='members')
@@ -39,7 +39,7 @@ class Appointments(BoxLayout):
         self.popupLayout.add_widget(self.appointmentTitleInput)
         self.popupLayout.add_widget(self.memberLayout)
         self.popupLayout.add_widget(self.saveButton)
-        self.popup = Popup(title='Neuer Termin', content=self.popupLayout, auto_dismiss=False)
+        self.popup = Popup(title='Was?', content=self.popupLayout, auto_dismiss=False)
         self.popup.bind(on_dismiss=partial(self.newAppointmentCallback, self.datetimePicker.get_datetime()))
         self.saveButton.bind(on_press=self.popup.dismiss)
         self.newAppointmentButton.bind(on_press=self.popup.open)
