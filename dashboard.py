@@ -1,5 +1,9 @@
 import kivy
 
+from kivy.config import Config
+Config.set('kivy', 'keyboard_mode', 'systemandmulti')
+from kivy.core.window import Window
+
 from kivy.app import App
 from kivy.uix.accordion import Accordion, AccordionItem
 from kivy.uix.image import Image
@@ -10,8 +14,8 @@ from schedule import Schedule
 
 class DashboardApp(App):
     def build(self):
-        root = Accordion()
-
+        root = Accordion()    
+      
         scheduleItem = AccordionItem(title='Stundenplan')
         scheduleItem.add_widget(Schedule())
         root.add_widget(scheduleItem)

@@ -1,6 +1,7 @@
 import sqlite3
 import kivy
 
+from kivy.core.window import Window
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -8,7 +9,7 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.garden.datetimepicker import DatetimePicker
 from kivy.uix.textinput import TextInput
-from kivy.uix.dropdown import DropDown
+from kivy.uix.togglebutton import ToggleButton
 
 from functools import partial
 
@@ -16,19 +17,27 @@ class Appointments(BoxLayout):
     
     def __init__(self, **kwargs):
         super(Appointments, self).__init__(**kwargs)
-
+        
         self.orientation='vertical'
         
-        self.newAppointmentButton = Button(text='Neuer Termin...', font_size=14)
+        self.newAppointmentButton = Button(text='Neuer Termin...', size=(200, 100), size_hint=(None, None), font_size=14)
         
         self.popupLayout = BoxLayout(orientation = 'vertical')        
         self.datetimePicker = DatetimePicker()
         self.appointmentTitleInput = TextInput(text='Neuer Termin', multiline=False)
-        self.appointmentMemberSelection = MemberDropDown()
+        self.memberLayout = BoxLayout(orientation='horizontal')       
+        self.memberButton1 = ToggleButton(text='Papa', group='members', state='down')
+        self.memberButton2 = ToggleButton(text='Mama', group='members')
+        self.memberButton3 = ToggleButton(text='Fiete', group='members')
+        self.memberButton4 = ToggleButton(text='Oma', group='members')
+        self.memberLayout.add_widget(self.memberButton1)
+        self.memberLayout.add_widget(self.memberButton2)
+        self.memberLayout.add_widget(self.memberButton3)
+        self.memberLayout.add_widget(self.memberButton4)      
         self.saveButton = Button(text='Speichern')
         self.popupLayout.add_widget(self.datetimePicker)
         self.popupLayout.add_widget(self.appointmentTitleInput)
-        #self.popupLayout.add_widget(self.appointmentMemberSelection)
+        self.popupLayout.add_widget(self.memberLayout)
         self.popupLayout.add_widget(self.saveButton)
         self.popup = Popup(title='Neuer Termin', content=self.popupLayout, auto_dismiss=False)
         self.popup.bind(on_dismiss=partial(self.newAppointmentCallback, self.datetimePicker.get_datetime()))
@@ -87,38 +96,3 @@ class Appointments(BoxLayout):
         connection.commit()
         connection.close()
         self.refreshData()
-        
-        
-class MemberDropDown(DropDown):
-        
-    def __init__(self, **kwargs):
-        super(MemberDropDown, self).__init__(**kwargs)
-
-        btn0 = Button(text='Fiete', size_hint_y=None, height=44)
-        # attach a callback that will call the select() method
-        # pass the text of the button as the data of the selection
-        btn0.bind(on_release=lambda btn0: self.select(btn0.text))
-        self.add_widget(btn0)
-
-        btn1 = Button(text='Mama', size_hint_y=None, height=44)
-        btn1.bind(on_release=lambda btn1: self.select(btn1.text))
-        self.add_widget(btn1)
-        
-        btn2 = Button(text='Papa', size_hint_y=None, height=44)
-        btn2.bind(on_release=lambda btn2: self.select(btn2.text))
-        self.add_widget(btn2)
-        
-        btn3 = Button(text='Oma', size_hint_y=None, height=44)
-        btn3.bind(on_release=lambda btn3: self.select(btn3.text))
-        self.add_widget(btn3)
-
-        self.mainbutton = Button(text='Fiete', size_hint=(None, None))
-
-        # show the dropdown menu when the main button is released
-        # note: all the bind() calls pass the instance of the caller (here, the
-        # mainbutton instance) as the first argument of the callback (here,
-        # dropdown.open.).
-        self.mainbutton.bind(on_release=self.open)
-
-        # isten for the selection in the dropdown list and assign the data to the button text
-        self.bind(on_select=lambda instance, x: setattr(self.mainbutton, 'text', x))
