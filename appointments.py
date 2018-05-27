@@ -10,6 +10,7 @@ from kivy.uix.popup import Popup
 from kivy.garden.datetimepicker import DatetimePicker
 from kivy.uix.textinput import TextInput
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.behaviors import ToggleButtonBehavior
 
 from functools import partial
 
@@ -24,7 +25,7 @@ class Appointments(BoxLayout):
         
         self.popupLayout = BoxLayout(orientation = 'vertical')        
         self.datetimePicker = DatetimePicker()
-        self.appointmentTitleInput = TextInput(text='Neuer Termin:', multiline=False)
+        self.appointmentTitleInput = TextInput(text='Was?', multiline=False)
         self.memberLayout = BoxLayout(orientation='horizontal')       
         self.memberButton1 = ToggleButton(text='Papa', group='members', state='down')
         self.memberButton2 = ToggleButton(text='Mama', group='members')
@@ -39,7 +40,7 @@ class Appointments(BoxLayout):
         self.popupLayout.add_widget(self.appointmentTitleInput)
         self.popupLayout.add_widget(self.memberLayout)
         self.popupLayout.add_widget(self.saveButton)
-        self.popup = Popup(title='Was?', content=self.popupLayout, auto_dismiss=False)
+        self.popup = Popup(title='Neuer Termin:', content=self.popupLayout, auto_dismiss=False)
         self.popup.bind(on_dismiss=partial(self.newAppointmentCallback, self.datetimePicker.get_datetime()))
         self.saveButton.bind(on_press=self.popup.dismiss)
         self.newAppointmentButton.bind(on_press=self.popup.open)
@@ -90,6 +91,13 @@ class Appointments(BoxLayout):
         time = str(appointmentTime.strftime("%H:%M")) # 16:00
         appointment = self.appointmentTitleInput.text
         member = 'Fiete'
+        
+        memberButtons = ToggleButtonBehavior.get_widgets('members')
+        for m in memberButtons:
+            if m.state == 'down':
+                member = m.text
+                break
+        
         sql = "INSERT INTO Appointment(appdate, apptime, apptext, member) VALUES(date('"+str(date)+"'), time('"+str(time)+"'), '" + appointment + "', '" + member + "')"
         print("SQL: " + sql)
         cursor.execute(sql)
