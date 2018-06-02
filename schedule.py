@@ -14,18 +14,23 @@ class Schedule(BoxLayout):
         
         self.orientation='vertical'
         self.add_widget(ScheduleTable())
-        self.add_widget(Label(text = '[b][color=#00ffff]' + time.strftime("%d.%m.%Y %I:%M") + '[/color][/b]', font_size='48sp', markup = True)) 
+        self.add_widget(self.createDateTimeInformation()) 
 
+    def createDateTimeInformation(self):
+        currentDay = time.strftime("%A")
+        dayToGermanDayMap = {'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch', 'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Sonnabend', 'Sunday': 'Sonntag'}
+        germanDay = dayToGermanDayMap.get(currentDay)
+    
+        label = Label(text = '[b][color=#00ffff]' + germanDay + ', ' + time.strftime("%d.%m.%Y %I:%M") + '[/color][/b]', font_size='32sp', markup = True)
+        return label 
+    
+    
+    
+    
 class ScheduleTable(GridLayout):
     
     def __init__(self, **kwargs):
         super(ScheduleTable, self).__init__(**kwargs)
-
-        currentDayHighlightStart = '[color=#00ffff][b]'
-        currentDayHighlightEnd = '[/b][/color]'
-        currentDay = time.strftime("%A")
-        dayToColumnMap = {'Monday': 1, 'Tuesday': 2}
-        columnIndexToHighlight = dayToColumnMap.get(currentDay)
         
         self.cols=6
         self.row_force_default=True
