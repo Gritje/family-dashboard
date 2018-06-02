@@ -67,7 +67,7 @@ class Appointments(BoxLayout):
              self.grid.add_widget(Label(text= str(row[1]) + ' ' + str(row[2]))) #date time
              self.grid.add_widget(Label(text= str(row[3]))) #appointment
              self.grid.add_widget(Label(text= str(row[4]))) #family member
-             deleteButton = Button(text='[color=#ff0000]X[/color]', markup = True)
+             deleteButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
              deleteButton.bind(on_press=partial(self.deleteAppointmentCallback, row[0])) #id 
              self.grid.add_widget(deleteButton)
 

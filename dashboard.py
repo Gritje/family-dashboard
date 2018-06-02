@@ -19,7 +19,7 @@ class DashboardApp(App):
         scheduleItem = AccordionItem(title='Stundenplan')
         scheduleItem.add_widget(Schedule())
         root.add_widget(scheduleItem)
-
+        
         appointmentsItem = AccordionItem(title='Termine')
         appointmentsItem.add_widget(Appointments())
         root.add_widget(appointmentsItem)
