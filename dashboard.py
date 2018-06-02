@@ -32,6 +32,8 @@ class DashboardApp(App):
         pictureItem.add_widget(Image(source='sommer.jpg'))
         root.add_widget(pictureItem)
         
+        scheduleItem.collapse = False
+        
         return root
 
 if __name__ == '__main__':
