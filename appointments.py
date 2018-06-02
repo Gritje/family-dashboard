@@ -41,7 +41,7 @@ class Appointments(BoxLayout):
         self.popupLayout.add_widget(self.memberLayout)
         self.popupLayout.add_widget(self.saveButton)
         self.popup = Popup(title='Neuer Termin:', content=self.popupLayout, auto_dismiss=False)
-        self.popup.bind(on_dismiss=partial(self.newAppointmentCallback, self.datetimePicker.get_datetime()))
+        self.popup.bind(on_dismiss=self.newAppointmentCallback)
         self.saveButton.bind(on_press=self.popup.dismiss)
         self.newAppointmentButton.bind(on_press=self.popup.open)
         self.add_widget(self.newAppointmentButton)
@@ -63,13 +63,16 @@ class Appointments(BoxLayout):
         self.grid.row_default_height=40
         self.add_widget(self.grid)        
         
-        for row in cursor:
-             self.grid.add_widget(Label(text= str(row[1]) + ' ' + str(row[2]))) #date time
-             self.grid.add_widget(Label(text= str(row[3]))) #appointment
-             self.grid.add_widget(Label(text= str(row[4]))) #family member
-             deleteButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
-             deleteButton.bind(on_press=partial(self.deleteAppointmentCallback, row[0])) #id 
-             self.grid.add_widget(deleteButton)
+        for row in cursor:            
+            self.grid.add_widget(Label(text= str(row[1]) + ' ' + str(row[2]))) #date time
+            self.grid.add_widget(Label(text= str(row[3]))) #appointment
+            name = str(row[4])
+            nameToColorMap = {'Papa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
+            nameColor = nameToColorMap.get(name)
+            self.grid.add_widget(Label(text= '[b][color=' + nameColor + ']' + name + '[/color][/b]', markup = True)) #family member
+            deleteButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
+            deleteButton.bind(on_press=partial(self.deleteAppointmentCallback, row[0])) #id 
+            self.grid.add_widget(deleteButton)
 
         connection.close()
      
