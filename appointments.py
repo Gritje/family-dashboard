@@ -66,18 +66,16 @@ class Appointments(BoxLayout):
         for row in cursor:            
             self.grid.add_widget(Label(text= str(row[1]) + ' ' + str(row[2]))) #date time
             self.grid.add_widget(Label(text= str(row[3]))) #appointment
-            name = str(row[4])            
-            self.grid.add_widget(Label(text= '[b][color=' + getColorForName(name) + ']' + name + '[/color][/b]', markup = True)) #family member
+            name = str(row[4])
+            nameToColorMap = {'Papa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
+            nameColor = nameToColorMap.get(name)
+            self.grid.add_widget(Label(text= '[b][color=' + nameColor + ']' + name + '[/color][/b]', markup = True)) #family member
             deleteButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
             deleteButton.bind(on_press=partial(self.deleteAppointmentCallback, row[0])) #id 
             self.grid.add_widget(deleteButton)
 
         connection.close()
      
-    def getColorForName(name):
-        nameToColorMap = {'Papa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
-        return nameToColorMap.get(name)                
-    
     def deleteAppointmentCallback(self, rowId, *args):
         connection = sqlite3.connect("dashboard.db")
         cursor = connection.cursor()
