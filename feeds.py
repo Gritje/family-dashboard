@@ -18,7 +18,7 @@ class Feeds(BoxLayout):
         trainFeed = feedparser.parse('https://www.deutschebahn.com/service/rss/pr-hamburg-de/1309346/feed.rss')     
         sponFeed = feedparser.parse('http://www.spiegel.de/schlagzeilen/tops/index.rss')
      
-        self.add_widget(Label(text = '[color=#00ffff]Nachrichten[/color]', font_size='20sp', markup = True))
+        self.add_widget(Label(text = '[b][color=#00ffff]Nachrichten[/color][/b]', size=(600, 40), size_hint=(None, None), font_size='32sp', markup = True))
 
         # SPON feeds
         spinnerList = []
@@ -26,7 +26,8 @@ class Feeds(BoxLayout):
              spinnerList.append(post.title)
              
         sponSpinner = Spinner(text=sponFeed.entries[0].title, values=spinnerList)
-        sponDescriptionLabel = Label(text = sponFeed.entries[0].description)
+        sponDescriptionLabel = Label(text = sponFeed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
+        sponDescriptionLabel.text_size = sponDescriptionLabel.size
 
         def getDescription(text):
             description = ''
@@ -44,14 +45,15 @@ class Feeds(BoxLayout):
         self.add_widget(sponDescriptionLabel)
 
         # Train feeds    
-        self.add_widget(Label(text = '[color=#00ffff]Bahn[/color]', font_size='20sp', markup = True))
+        self.add_widget(Label(text = '[b][color=#00ffff]Bahn[/color][/b]', size=(600, 40), size_hint=(None, None), font_size='32sp', markup = True))
      
         spinnerList = []
         for post in trainFeed.entries:
             spinnerList.append(post.title)
 
         trainSpinner = Spinner(text=trainFeed.entries[0].title, values=spinnerList)
-        trainDescriptionLabel = Label(text = trainFeed.entries[0].description)
+        trainDescriptionLabel = Label(text = trainFeed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
+        trainDescriptionLabel.text_size = trainDescriptionLabel.size
 
         def getTrainDescription(text):
             description = ''
