@@ -12,61 +12,39 @@ class Feeds(BoxLayout):
 
         self.orientation='vertical'
         self.spacing=10
-        self.feeds()
+        
+        self.sponFeed = feedparser.parse('http://www.spiegel.de/schlagzeilen/tops/index.rss')
+        self.trainFeed = feedparser.parse('https://www.deutschebahn.com/service/rss/pr-hamburg-de/1309346/feed.rss')
+        self.__feeds(self.sponFeed, 'Nachrichten')        
+        self.__feeds(self.trainFeed, 'Bahn')
+        
 
-    def feeds(self):
-        trainFeed = feedparser.parse('https://www.deutschebahn.com/service/rss/pr-hamburg-de/1309346/feed.rss')     
-        sponFeed = feedparser.parse('http://www.spiegel.de/schlagzeilen/tops/index.rss')
-     
-        self.add_widget(Label(text = '[b][color=#00ffff]Nachrichten[/color][/b]', size=(600, 40), size_hint=(None, None), font_size='32sp', markup = True))
-
-        # SPON feeds
+    def __feeds(self, feed, headline):
+        
+        self.add_widget(Label(text = '[b][color=#00ffff]' + headline + '[/color][/b]', size=(600, 40), size_hint=(None, None), font_size='32sp', markup = True))
+        
         spinnerList = []
-        for post in sponFeed.entries:
-             spinnerList.append(post.title)
-             
-        sponSpinner = Spinner(text=sponFeed.entries[0].title, values=spinnerList)
-        sponDescriptionLabel = Label(text = sponFeed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
-        sponDescriptionLabel.text_size = sponDescriptionLabel.size
-
-        def getDescription(text):
-            description = ''
-            for post in sponFeed.entries:
-                if post.title == text:
-                    return post.description
-            return description
-
-        def show_selected_value(sponSpinner, text):
-            sponDescriptionLabel.text = getDescription(text)
-
-        sponSpinner.bind(text=show_selected_value)
-          
-        self.add_widget(sponSpinner)
-        self.add_widget(sponDescriptionLabel)
-
-        # Train feeds    
-        self.add_widget(Label(text = '[b][color=#00ffff]Bahn[/color][/b]', size=(600, 40), size_hint=(None, None), font_size='32sp', markup = True))
-     
-        spinnerList = []
-        for post in trainFeed.entries:
+        for post in feed.entries:
             spinnerList.append(post.title)
 
-        trainSpinner = Spinner(text=trainFeed.entries[0].title, values=spinnerList)
-        trainDescriptionLabel = Label(text = trainFeed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
-        trainDescriptionLabel.text_size = trainDescriptionLabel.size
+        feedDescriptionLabel = Label(text = feed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
+        feedDescriptionLabel.text_size = feedDescriptionLabel.size
+        
+        feedSpinner = Spinner(text=feed.entries[0].title, values=spinnerList)
+        
+        def show_selected_value(feedSpinner, text):
+            feedDescriptionLabel.text = self.__getFeedDescription(feed, text)
+            
+        feedSpinner.bind(text=show_selected_value)
 
-        def getTrainDescription(text):
-            description = ''
-            for post in trainFeed.entries:
-                if post.title == text:
-                    return post.description
-            return description
+        self.add_widget(feedSpinner)
+        self.add_widget(feedDescriptionLabel)
+        
+    def __getFeedDescription(self, feed, text):
+        description = ''
+        for post in feed.entries:
+            if post.title == text:
+                return post.description
+        return description
 
-        def show_selected_value2(trainSpinner, text):
-            trainDescriptionLabel.text = getTrainDescription(text)
-
-        trainSpinner.bind(text=show_selected_value2)
-
-        self.add_widget(trainSpinner)
-        self.add_widget(trainDescriptionLabel)
-    
+     
