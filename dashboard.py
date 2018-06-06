@@ -6,6 +6,7 @@ from kivy.core.window import Window
 
 from kivy.app import App
 from kivy.uix.accordion import Accordion, AccordionItem
+from kivy.uix.button import Button
 
 from feeds import Feeds
 from appointments import Appointments
@@ -13,6 +14,7 @@ from schedule import Schedule
 from pictureFrame import PictureFrame
 
 class DashboardApp(App):
+    
     def build(self):
         root = Accordion()    
       
@@ -30,11 +32,18 @@ class DashboardApp(App):
 
         pictureItem = AccordionItem(title='Bilder')
         pictureItem.add_widget(PictureFrame())
+        
+        closeButton = Button(text = 'Beenden')
+        closeButton.bind(on_press=self.closeApp)
+        pictureItem.add_widget(closeButton)
         root.add_widget(pictureItem)
         
         scheduleItem.collapse = False
         
         return root
+    
+    def closeApp(self, instance):
+        self.stop()
 
 if __name__ == '__main__':
     DashboardApp().run()
