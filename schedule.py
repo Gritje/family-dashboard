@@ -1,7 +1,7 @@
 import time
 import kivy
 
-from kivy.app import App
+from kivy.clock import Clock
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -14,17 +14,21 @@ class Schedule(BoxLayout):
         
         self.orientation='vertical'
         self.add_widget(ScheduleTable())
-        self.add_widget(self.createDateTimeInformation()) 
-
-    def createDateTimeInformation(self):
+        self.dateTimeLabel = Label(text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]', font_size='32sp', markup = True)
+        self.add_widget(self.dateTimeLabel)
+        
+        Clock.schedule_interval(self.__updateDateTime, 60)
+    
+    def __getDateTime(self):
         currentDay = time.strftime("%A")
-        dayToGermanDayMap = {'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch', 'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Sonnabend', 'Sunday': 'Sonntag'}
-        germanDay = dayToGermanDayMap.get(currentDay)
+        #dayToGermanDayMap = {'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch', 'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Sonnabend', 'Sunday': 'Sonntag'}
+        #germanDay = dayToGermanDayMap.get(currentDay)
+        #formattedDateTime = germanDay + ', ' + time.strftime("%d.%m.%Y %I:%M")
+        formattedDateTime = currentDay + ', ' + time.strftime("%d.%m.%Y %I:%M")
+        return formattedDateTime
     
-        label = Label(text = '[b][color=#00ffff]' + germanDay + ', ' + time.strftime("%d.%m.%Y %I:%M") + '[/color][/b]', font_size='32sp', markup = True)
-        return label 
-    
-    
+    def __updateDateTime(self, dt): # dt = delta-time
+        self.dateTimeLabel.text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]'
     
     
 class ScheduleTable(GridLayout):
