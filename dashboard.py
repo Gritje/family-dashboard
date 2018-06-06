@@ -6,11 +6,11 @@ from kivy.core.window import Window
 
 from kivy.app import App
 from kivy.uix.accordion import Accordion, AccordionItem
-from kivy.uix.image import Image
 
 from feeds import Feeds
 from appointments import Appointments
 from schedule import Schedule
+from pictureFrame import PictureFrame
 
 class DashboardApp(App):
     def build(self):
@@ -28,8 +28,8 @@ class DashboardApp(App):
         newsItem.add_widget(Feeds())
         root.add_widget(newsItem)
 
-        pictureItem = AccordionItem(title='Bild')
-        pictureItem.add_widget(Image(source='sommer.jpg'))
+        pictureItem = AccordionItem(title='Bilder')
+        pictureItem.add_widget(PictureFrame())
         root.add_widget(pictureItem)
         
         scheduleItem.collapse = False
