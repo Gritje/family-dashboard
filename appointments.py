@@ -1,4 +1,5 @@
 import sqlite3
+import time
 import kivy
 
 from kivy.core.window import Window
@@ -49,7 +50,8 @@ class Appointments(BoxLayout):
         self.grid = GridLayout(cols = 4)
         self.grid.row_force_default=True
         self.grid.row_default_height=40
-        self.add_widget(self.grid)  
+        self.add_widget(self.grid)
+        self.__appointmentDates = []
         self.refreshData()        
 
     def refreshData(self):
@@ -57,13 +59,16 @@ class Appointments(BoxLayout):
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM Appointment ORDER BY appdate DESC")
 
+        self.__appointmentDates = []
+
         self.remove_widget(self.grid)
         self.grid = GridLayout(cols = 4)
         self.grid.row_force_default=True
         self.grid.row_default_height=40
         self.add_widget(self.grid)        
         
-        for row in cursor:            
+        for row in cursor:
+            self.__appointmentDates.append(str(row[1]))
             self.grid.add_widget(Label(text= str(row[1]) + ' ' + str(row[2]))) #date time
             self.grid.add_widget(Label(text= str(row[3]))) #appointment
             name = str(row[4])            
@@ -109,3 +114,7 @@ class Appointments(BoxLayout):
         connection.commit()
         connection.close()
         self.refreshData()
+        
+    def due(self):
+        today = time.strftime("%Y-%m-%d")
+        return today in self.__appointmentDates

@@ -3,6 +3,7 @@ import kivy
 from kivy.config import Config
 Config.set('kivy', 'keyboard_mode', 'systemandmulti')
 from kivy.core.window import Window
+from kivy.clock import Clock
 
 from kivy.app import App
 from kivy.uix.accordion import Accordion, AccordionItem
@@ -16,32 +17,41 @@ from pictureFrame import PictureFrame
 class DashboardApp(App):
     
     def build(self):
-        root = Accordion()    
+        self.root = Accordion()    
       
-        scheduleItem = AccordionItem(title='Stundenplan')
-        scheduleItem.add_widget(Schedule())
-        root.add_widget(scheduleItem)
+        self.scheduleItem = AccordionItem(title='Stundenplan')
+        self.scheduleItem.add_widget(Schedule())
+        self.root.add_widget(self.scheduleItem)
         
-        appointmentsItem = AccordionItem(title='Termine')
-        appointmentsItem.add_widget(Appointments())
-        root.add_widget(appointmentsItem)
+        self.appointmentsItem = AccordionItem(title='Termine')
+        self.appointments = Appointments()
+        self.appointmentsItem.add_widget(self.appointments)
+        self.root.add_widget(self.appointmentsItem)
 
-        newsItem = AccordionItem(title='Nachrichten')
-        newsItem.add_widget(Feeds())
-        root.add_widget(newsItem)
+        self.newsItem = AccordionItem(title='Nachrichten')
+        self.newsItem.add_widget(Feeds())
+        self.root.add_widget(self.newsItem)
 
-        pictureItem = AccordionItem(title='Bilder')
-        pictureItem.add_widget(PictureFrame())
+        self.pictureItem = AccordionItem(title='Bilder')
+        self.pictureItem.add_widget(PictureFrame())
         
-        closeButton = Button(text = 'Beenden')
-        closeButton.bind(on_press=self.closeApp)
-        pictureItem.add_widget(closeButton)
-        root.add_widget(pictureItem)
+        self.closeButton = Button(text = 'Beenden')
+        self.closeButton.bind(on_press=self.closeApp)
+        self.pictureItem.add_widget(self.closeButton)
+        self.root.add_widget(self.pictureItem)
         
-        scheduleItem.collapse = False
+        self.scheduleItem.collapse = False
         
-        return root
+        Clock.schedule_interval(self.__updateItems, 60)
+        
+        return self.root
     
+    def __updateItems(self, dt):
+        if self.appointments.due():
+            self.appointmentsItem.title = 'Termin >>>heute<<<'
+        else:
+            self.appointmentsItem.title = 'Termine'
+        
     def closeApp(self, instance):
         self.stop()
 
