@@ -36,7 +36,7 @@ class DashboardApp(App):
         self.pictureItem = AccordionItem(title='Bilder')
         self.pictureItem.add_widget(PictureFrame())
         
-        self.closeButton = Button(text = 'Beenden')
+        self.closeButton = Button(text = 'Beenden', size=(100, 50), size_hint=(None, None), background_color=[1,0,0,1])
         self.closeButton.bind(on_press=self.closeApp)
         self.pictureItem.add_widget(self.closeButton)
         self.root.add_widget(self.pictureItem)
