@@ -26,10 +26,8 @@ class Appointments(BoxLayout):
         self.newReminderButton = Button(text='Neue Erinnerung...', size=(200, 100), size_hint=(None, None), font_size=14)
                 
         self.popup = self.__newAppointmentPopup()
-        self.reminderPopup = self.__newReminderPopup()
-        
+
         self.newAppointmentButton.bind(on_press=self.popup.open)
-        self.newReminderButton.bind(on_press=self.reminderPopup.open)
         self.add_widget(self.newAppointmentButton)
         self.add_widget(self.newReminderButton)
         
