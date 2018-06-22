@@ -22,13 +22,15 @@ class Appointments(BoxLayout):
         
         self.orientation='vertical'
         
-        self.newAppointmentButton = Button(text='Neuer Termin...', size=(200, 100), size_hint=(None, None), font_size=14)
-        self.newReminderButton = Button(text='Neue Erinnerung...', size=(200, 100), size_hint=(None, None), font_size=14)
+        self.newAppointmentButton = Button(text='Neuer Termin...', size=(200, 50), size_hint=(None, None), font_size=14)
+        self.newReminderButton = Button(text='Neue Erinnerung...', size=(200, 50), size_hint=(None, None), font_size=14)
                 
-        self.popup = self.__newAppointmentPopup()
-
-        self.newAppointmentButton.bind(on_press=self.popup.open)
+        self.appointmentPopup = self.__newAppointmentPopup()
+        self.newAppointmentButton.bind(on_press=self.appointmentPopup.open)
         self.add_widget(self.newAppointmentButton)
+        
+        self.reminderPopup = self.__newReminderPopup()
+        self.newReminderButton.bind(on_press=self.reminderPopup.open)
         self.add_widget(self.newReminderButton)
         
         self.grid = GridLayout(cols = 4)
@@ -65,6 +67,24 @@ class Appointments(BoxLayout):
         
         return popup
 
+    def __newReminderPopup(self):
+        popupLayout = BoxLayout(orientation = 'vertical')
+        
+        starttimePicker = DatetimePicker()
+        reminderTitleInput = TextInput(text='Was?', multiline=False)
+        saveButton = Button(text='Speichern')
+        interval = TextInput(text='1', multiline=False)
+        popupLayout.add_widget(starttimePicker)
+        popupLayout.add_widget(reminderTitleInput)
+        popupLayout.add_widget(interval)
+        popupLayout.add_widget(saveButton)
+        
+        popup = Popup(title='Neue Erinnerung:', content=popupLayout, auto_dismiss=False)
+        popup.bind(on_dismiss=partial(self.newReminderCallback, starttimePicker.get_datetime(), reminderTitleInput.text, interval.text))
+        saveButton.bind(on_press=popup.dismiss)
+        
+        return popup
+
     def refreshData(self):
         connection = sqlite3.connect("dashboard.db")
         cursor = connection.cursor()
@@ -87,23 +107,23 @@ class Appointments(BoxLayout):
             deleteButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
             deleteButton.bind(on_press=partial(self.deleteAppointmentCallback, row[0])) #id 
             self.grid.add_widget(deleteButton)
-
+            
+        cursor.execute("SELECT * FROM Reminder ORDER BY startdate DESC")
+        
+        for row in cursor:
+            self.grid.add_widget(Label(text= str(row[1]))) #date
+            self.grid.add_widget(Label(text= str(row[2]))) #reminder 
+            self.grid.add_widget(Label(text= str(row[3]) + ' Wochen')) #interval in weeks
+            deleteReminderButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
+            deleteReminderButton.bind(on_press=partial(self.deleteReminderCallback, row[0])) #id 
+            self.grid.add_widget(deleteReminderButton)            
+            
         connection.close()
      
     def getColorForName(self, name):
         nameToColorMap = {'Papa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
         return nameToColorMap.get(name)                
     
-    def deleteAppointmentCallback(self, rowId, *args):
-        connection = sqlite3.connect("dashboard.db")
-        cursor = connection.cursor()
-        sql = "DELETE FROM Appointment WHERE id = " + str(rowId)
-        print("SQL: " + sql)
-        cursor.execute(sql)
-        connection.commit()
-        connection.close()
-        self.refreshData()
-
     def newAppointmentCallback(self, appointmentTime, appointment, *args):
         connection = sqlite3.connect("dashboard.db")
         cursor = connection.cursor()
@@ -124,6 +144,38 @@ class Appointments(BoxLayout):
         connection.commit()
         connection.close()
         self.refreshData()
+
+    def deleteAppointmentCallback(self, rowId, *args):
+        connection = sqlite3.connect("dashboard.db")
+        cursor = connection.cursor()
+        sql = "DELETE FROM Appointment WHERE id = " + str(rowId)
+        print("SQL: " + sql)
+        cursor.execute(sql)
+        connection.commit()
+        connection.close()
+        self.refreshData()
+        
+    def newReminderCallback(self, startTime, reminder, intervalInWeeks, *args):
+        connection = sqlite3.connect("dashboard.db")
+        cursor = connection.cursor()
+        dateStr = str(startTime.strftime("%Y-%m-%d")) # 2018-05-15
+        
+        sql = "INSERT INTO Reminder(startdate, text, interval) VALUES(date('"+ dateStr +"'), '" + reminder + "', " + str(intervalInWeeks) + ")"
+        print("SQL: " + sql)
+        cursor.execute(sql)
+        connection.commit()
+        connection.close()
+        self.refreshData()
+        
+    def deleteReminderCallback(self, rowId, *args):
+        connection = sqlite3.connect("dashboard.db")
+        cursor = connection.cursor()
+        sql = "DELETE FROM Reminder WHERE id = " + str(rowId)
+        print("SQL: " + sql)
+        cursor.execute(sql)
+        connection.commit()
+        connection.close()
+        self.refreshData()        
         
     def due(self):
         today = time.strftime("%Y-%m-%d")
