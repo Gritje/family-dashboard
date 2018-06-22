@@ -24,26 +24,8 @@ class Appointments(BoxLayout):
         
         self.newAppointmentButton = Button(text='Neuer Termin...', size=(200, 100), size_hint=(None, None), font_size=14)
         
-        self.popupLayout = BoxLayout(orientation = 'vertical')        
-        self.datetimePicker = DatetimePicker()
-        self.appointmentTitleInput = TextInput(text='Was?', multiline=False)
-        self.memberLayout = BoxLayout(orientation='horizontal')       
-        self.memberButton1 = ToggleButton(text='Papa', group='members', state='down')
-        self.memberButton2 = ToggleButton(text='Mama', group='members')
-        self.memberButton3 = ToggleButton(text='Fiete', group='members')
-        self.memberButton4 = ToggleButton(text='Oma', group='members')
-        self.memberLayout.add_widget(self.memberButton1)
-        self.memberLayout.add_widget(self.memberButton2)
-        self.memberLayout.add_widget(self.memberButton3)
-        self.memberLayout.add_widget(self.memberButton4)      
-        self.saveButton = Button(text='Speichern')
-        self.popupLayout.add_widget(self.datetimePicker)
-        self.popupLayout.add_widget(self.appointmentTitleInput)
-        self.popupLayout.add_widget(self.memberLayout)
-        self.popupLayout.add_widget(self.saveButton)
-        self.popup = Popup(title='Neuer Termin:', content=self.popupLayout, auto_dismiss=False)
-        self.popup.bind(on_dismiss=self.newAppointmentCallback)
-        self.saveButton.bind(on_press=self.popup.dismiss)
+        self.popup = self.__newAppointmentPopup()
+        
         self.newAppointmentButton.bind(on_press=self.popup.open)
         self.add_widget(self.newAppointmentButton)
         
@@ -52,7 +34,34 @@ class Appointments(BoxLayout):
         self.grid.row_default_height=40
         self.add_widget(self.grid)
         self.__appointmentDates = []
-        self.refreshData()        
+        self.refreshData()
+        
+    def __newAppointmentPopup(self):
+        popupLayout = BoxLayout(orientation = 'vertical')
+        
+        datetimePicker = DatetimePicker()
+        appointmentTitleInput = TextInput(text='Was?', multiline=False)
+        memberLayout = BoxLayout(orientation='horizontal')       
+        memberButton1 = ToggleButton(text='Papa', group='members', state='down')
+        memberButton2 = ToggleButton(text='Mama', group='members')
+        memberButton3 = ToggleButton(text='Fiete', group='members')
+        memberButton4 = ToggleButton(text='Oma', group='members')
+        memberLayout.add_widget(memberButton1)
+        memberLayout.add_widget(memberButton2)
+        memberLayout.add_widget(memberButton3)
+        memberLayout.add_widget(memberButton4)      
+        saveButton = Button(text='Speichern')
+        
+        popupLayout.add_widget(datetimePicker)
+        popupLayout.add_widget(appointmentTitleInput)
+        popupLayout.add_widget(memberLayout)
+        popupLayout.add_widget(saveButton)
+        
+        popup = Popup(title='Neuer Termin:', content=popupLayout, auto_dismiss=False)
+        popup.bind(on_dismiss=partial(self.newAppointmentCallback, datetimePicker.get_datetime(), appointmentTitleInput.text))
+        saveButton.bind(on_press=popup.dismiss)
+        
+        return popup
 
     def refreshData(self):
         connection = sqlite3.connect("dashboard.db")
@@ -93,13 +102,12 @@ class Appointments(BoxLayout):
         connection.close()
         self.refreshData()
 
-    def newAppointmentCallback(self, appointmentTime, *args):
-        appointmentTime = self.datetimePicker.get_datetime()
+    def newAppointmentCallback(self, appointmentTime, appointment, *args):
         connection = sqlite3.connect("dashboard.db")
         cursor = connection.cursor()
         date = str(appointmentTime.strftime("%Y-%m-%d")) # 2018-05-15
         time = str(appointmentTime.strftime("%H:%M")) # 16:00
-        appointment = self.appointmentTitleInput.text
+       
         member = 'Fiete'
         
         memberButtons = ToggleButtonBehavior.get_widgets('members')
