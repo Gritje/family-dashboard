@@ -17,9 +17,10 @@ from functools import partial
 
 class NewAppointmentPopup(Popup):
       
-    def __init__(self, **kwargs):
+    def __init__(self, root, **kwargs):
         super(NewAppointmentPopup, self).__init__(**kwargs)
         
+        self._root = root
         self._popupLayout = BoxLayout(orientation = 'vertical')
         
         self._datetimePicker = DatetimePicker()
@@ -67,14 +68,16 @@ class NewAppointmentPopup(Popup):
         cursor.execute(sql)
         connection.commit()
         connection.close()
-        #self.refreshData()
+        self._root.refreshData()
         
 class NewReminderPopup(Popup):
 
-    def __init__(self, **kwargs):
+    def __init__(self, root, **kwargs):
         super(NewReminderPopup, self).__init__(**kwargs)
         
         self._popupLayout = BoxLayout(orientation = 'vertical')
+        
+        self._root = root
         
         self._starttimePicker = DatetimePicker()
         self._reminderTitleInput = TextInput(text='Was?', multiline=False)
@@ -104,7 +107,7 @@ class NewReminderPopup(Popup):
         cursor.execute(sql)
         connection.commit()
         connection.close()
-        #self.refreshData()
+        self._root.refreshData()
 
 class Appointments(BoxLayout):
     
@@ -116,11 +119,11 @@ class Appointments(BoxLayout):
         self.newAppointmentButton = Button(text='Neuer Termin...', size=(200, 50), size_hint=(None, None), font_size=14)
         self.newReminderButton = Button(text='Neue Erinnerung...', size=(200, 50), size_hint=(None, None), font_size=14)
                 
-        self.appointmentPopup = NewAppointmentPopup()
+        self.appointmentPopup = NewAppointmentPopup(self)
         self.newAppointmentButton.bind(on_press=self.appointmentPopup.open)
         self.add_widget(self.newAppointmentButton)
         
-        self.reminderPopup = NewReminderPopup()
+        self.reminderPopup = NewReminderPopup(self)
         self.newReminderButton.bind(on_press=self.reminderPopup.open)
         self.add_widget(self.newReminderButton)
         
