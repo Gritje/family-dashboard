@@ -15,6 +15,97 @@ from kivy.uix.behaviors import ToggleButtonBehavior
 
 from functools import partial
 
+class NewAppointmentPopup(Popup):
+      
+    def __init__(self, **kwargs):
+        super(NewAppointmentPopup, self).__init__(**kwargs)
+        
+        self._popupLayout = BoxLayout(orientation = 'vertical')
+        
+        self._datetimePicker = DatetimePicker()
+        self._appointmentTitleInput = TextInput(text='Was?', multiline=False)
+        self._memberLayout = BoxLayout(orientation='horizontal')       
+        self._memberButton1 = ToggleButton(text='Papa', group='members', state='down')
+        self._memberButton2 = ToggleButton(text='Mama', group='members')
+        self._memberButton3 = ToggleButton(text='Fiete', group='members')
+        self._memberButton4 = ToggleButton(text='Oma', group='members')
+        self._memberLayout.add_widget(self._memberButton1)
+        self._memberLayout.add_widget(self._memberButton2)
+        self._memberLayout.add_widget(self._memberButton3)
+        self._memberLayout.add_widget(self._memberButton4)      
+        self._saveButton = Button(text='Speichern')
+        
+        self._popupLayout.add_widget(self._datetimePicker)
+        self._popupLayout.add_widget(self._appointmentTitleInput)
+        self._popupLayout.add_widget(self._memberLayout)
+        self._popupLayout.add_widget(self._saveButton)
+        
+        self.title='Neuer Termin:'
+        self.content=self._popupLayout
+        self.auto_dismiss=False
+        self.bind(on_dismiss=self._newAppointmentCallback)
+        self._saveButton.bind(on_press=self.dismiss)
+        
+    def _newAppointmentCallback(self, *args):
+        appointment = self._appointmentTitleInput.text
+        appointmentTime = self._datetimePicker.get_datetime()
+        connection = sqlite3.connect("dashboard.db")
+        cursor = connection.cursor()
+        date = str(appointmentTime.strftime("%Y-%m-%d")) # 2018-05-15
+        time = str(appointmentTime.strftime("%H:%M")) # 16:00
+       
+        member = 'Fiete'
+        
+        memberButtons = ToggleButtonBehavior.get_widgets('members')
+        for m in memberButtons:
+            if m.state == 'down':
+                member = m.text
+                break
+        
+        sql = "INSERT INTO Appointment(appdate, apptime, apptext, member) VALUES(date('"+str(date)+"'), time('"+str(time)+"'), '" + appointment + "', '" + member + "')"
+        print("SQL: " + sql)
+        cursor.execute(sql)
+        connection.commit()
+        connection.close()
+        #self.refreshData()
+        
+class NewReminderPopup(Popup):
+
+    def __init__(self, **kwargs):
+        super(NewReminderPopup, self).__init__(**kwargs)
+        
+        self._popupLayout = BoxLayout(orientation = 'vertical')
+        
+        self._starttimePicker = DatetimePicker()
+        self._reminderTitleInput = TextInput(text='Was?', multiline=False)
+        self._saveButton = Button(text='Speichern')
+        self._interval = TextInput(text='1', multiline=False)
+        self._popupLayout.add_widget(self._starttimePicker)
+        self._popupLayout.add_widget(self._reminderTitleInput)
+        self._popupLayout.add_widget(self._interval)
+        self._popupLayout.add_widget(self._saveButton)
+        
+        self.title='Neue Erinnerung:'
+        self.content=self._popupLayout
+        self.auto_dismiss=False
+        self.bind(on_dismiss=self._newReminderCallback)
+        self._saveButton.bind(on_press=self.dismiss)
+        
+    def _newReminderCallback(self, *args):
+        startTime = self._starttimePicker.get_datetime()
+        reminder = self._reminderTitleInput.text
+        intervalInWeeks = self._interval.text
+        connection = sqlite3.connect("dashboard.db")
+        cursor = connection.cursor()
+        dateStr = str(startTime.strftime("%Y-%m-%d")) # 2018-05-15
+        
+        sql = "INSERT INTO Reminder(startdate, text, interval) VALUES(date('"+ dateStr +"'), '" + reminder + "', " + str(intervalInWeeks) + ")"
+        print("SQL: " + sql)
+        cursor.execute(sql)
+        connection.commit()
+        connection.close()
+        #self.refreshData()
+
 class Appointments(BoxLayout):
     
     def __init__(self, **kwargs):
@@ -25,11 +116,11 @@ class Appointments(BoxLayout):
         self.newAppointmentButton = Button(text='Neuer Termin...', size=(200, 50), size_hint=(None, None), font_size=14)
         self.newReminderButton = Button(text='Neue Erinnerung...', size=(200, 50), size_hint=(None, None), font_size=14)
                 
-        self.appointmentPopup = self.__newAppointmentPopup()
+        self.appointmentPopup = NewAppointmentPopup()
         self.newAppointmentButton.bind(on_press=self.appointmentPopup.open)
         self.add_widget(self.newAppointmentButton)
         
-        self.reminderPopup = self.__newReminderPopup()
+        self.reminderPopup = NewReminderPopup()
         self.newReminderButton.bind(on_press=self.reminderPopup.open)
         self.add_widget(self.newReminderButton)
         
@@ -39,51 +130,6 @@ class Appointments(BoxLayout):
         self.add_widget(self.grid)
         self.__appointmentDates = []
         self.refreshData()
-        
-    def __newAppointmentPopup(self):
-        popupLayout = BoxLayout(orientation = 'vertical')
-        
-        datetimePicker = DatetimePicker()
-        appointmentTitleInput = TextInput(text='Was?', multiline=False)
-        memberLayout = BoxLayout(orientation='horizontal')       
-        memberButton1 = ToggleButton(text='Papa', group='members', state='down')
-        memberButton2 = ToggleButton(text='Mama', group='members')
-        memberButton3 = ToggleButton(text='Fiete', group='members')
-        memberButton4 = ToggleButton(text='Oma', group='members')
-        memberLayout.add_widget(memberButton1)
-        memberLayout.add_widget(memberButton2)
-        memberLayout.add_widget(memberButton3)
-        memberLayout.add_widget(memberButton4)      
-        saveButton = Button(text='Speichern')
-        
-        popupLayout.add_widget(datetimePicker)
-        popupLayout.add_widget(appointmentTitleInput)
-        popupLayout.add_widget(memberLayout)
-        popupLayout.add_widget(saveButton)
-        
-        popup = Popup(title='Neuer Termin:', content=popupLayout, auto_dismiss=False)
-        popup.bind(on_dismiss=partial(self.newAppointmentCallback, datetimePicker.get_datetime(), appointmentTitleInput.text))
-        saveButton.bind(on_press=popup.dismiss)
-        
-        return popup
-
-    def __newReminderPopup(self):
-        popupLayout = BoxLayout(orientation = 'vertical')
-        
-        starttimePicker = DatetimePicker()
-        reminderTitleInput = TextInput(text='Was?', multiline=False)
-        saveButton = Button(text='Speichern')
-        interval = TextInput(text='1', multiline=False)
-        popupLayout.add_widget(starttimePicker)
-        popupLayout.add_widget(reminderTitleInput)
-        popupLayout.add_widget(interval)
-        popupLayout.add_widget(saveButton)
-        
-        popup = Popup(title='Neue Erinnerung:', content=popupLayout, auto_dismiss=False)
-        popup.bind(on_dismiss=partial(self.newReminderCallback, starttimePicker.get_datetime(), reminderTitleInput.text, interval.text))
-        saveButton.bind(on_press=popup.dismiss)
-        
-        return popup
 
     def refreshData(self):
         connection = sqlite3.connect("dashboard.db")
@@ -121,29 +167,8 @@ class Appointments(BoxLayout):
         connection.close()
      
     def getColorForName(self, name):
-        nameToColorMap = {'Papa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
+        nameToColorMap = {'pa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
         return nameToColorMap.get(name)                
-    
-    def newAppointmentCallback(self, appointmentTime, appointment, *args):
-        connection = sqlite3.connect("dashboard.db")
-        cursor = connection.cursor()
-        date = str(appointmentTime.strftime("%Y-%m-%d")) # 2018-05-15
-        time = str(appointmentTime.strftime("%H:%M")) # 16:00
-       
-        member = 'Fiete'
-        
-        memberButtons = ToggleButtonBehavior.get_widgets('members')
-        for m in memberButtons:
-            if m.state == 'down':
-                member = m.text
-                break
-        
-        sql = "INSERT INTO Appointment(appdate, apptime, apptext, member) VALUES(date('"+str(date)+"'), time('"+str(time)+"'), '" + appointment + "', '" + member + "')"
-        print("SQL: " + sql)
-        cursor.execute(sql)
-        connection.commit()
-        connection.close()
-        self.refreshData()
 
     def deleteAppointmentCallback(self, rowId, *args):
         connection = sqlite3.connect("dashboard.db")
@@ -153,19 +178,7 @@ class Appointments(BoxLayout):
         cursor.execute(sql)
         connection.commit()
         connection.close()
-        self.refreshData()
-        
-    def newReminderCallback(self, startTime, reminder, intervalInWeeks, *args):
-        connection = sqlite3.connect("dashboard.db")
-        cursor = connection.cursor()
-        dateStr = str(startTime.strftime("%Y-%m-%d")) # 2018-05-15
-        
-        sql = "INSERT INTO Reminder(startdate, text, interval) VALUES(date('"+ dateStr +"'), '" + reminder + "', " + str(intervalInWeeks) + ")"
-        print("SQL: " + sql)
-        cursor.execute(sql)
-        connection.commit()
-        connection.close()
-        self.refreshData()
+        self.refreshData()        
         
     def deleteReminderCallback(self, rowId, *args):
         connection = sqlite3.connect("dashboard.db")
