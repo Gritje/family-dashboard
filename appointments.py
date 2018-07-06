@@ -131,7 +131,7 @@ class Appointments(BoxLayout):
         self.grid.row_force_default=True
         self.grid.row_default_height=40
         self.add_widget(self.grid)
-        self.__appointmentDates = []
+        self.__appointments = []
         self.refreshData()
 
     def refreshData(self):
@@ -139,7 +139,7 @@ class Appointments(BoxLayout):
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM Appointment ORDER BY appdate DESC")
 
-        self.__appointmentDates = []
+        self.__appointments = []
 
         self.remove_widget(self.grid)
         self.grid = GridLayout(cols = 4)
@@ -148,11 +148,14 @@ class Appointments(BoxLayout):
         self.add_widget(self.grid)        
         
         for row in cursor:
-            self.__appointmentDates.append(str(row[1]))
-            self.grid.add_widget(Label(text= str(row[1]) + ' ' + str(row[2]))) #date time
-            self.grid.add_widget(Label(text= str(row[3]))) #appointment
-            name = str(row[4])            
-            self.grid.add_widget(Label(text= '[b][color=' + self.getColorForName(name) + ']' + name + '[/color][/b]', markup = True)) #family member
+            date = str(row[1])
+            time = str(row[2])
+            title = str(row[3])
+            member = str(row[4])
+            self.__appointments.append(AppointmentData(date, time, title, member))
+            self.grid.add_widget(Label(text= date + ' ' + time)) #date time
+            self.grid.add_widget(Label(text= title)) #appointment          
+            self.grid.add_widget(Label(text= '[b][color=' + self.getColorForName(member) + ']' + member + '[/color][/b]', markup = True)) #family member
             deleteButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
             deleteButton.bind(on_press=partial(self.deleteAppointmentCallback, row[0])) #id 
             self.grid.add_widget(deleteButton)
@@ -195,4 +198,22 @@ class Appointments(BoxLayout):
         
     def due(self):
         today = time.strftime("%Y-%m-%d")
-        return today in self.__appointmentDates
+        appointmentsToday = []
+        
+        for a in self.__appointments:
+            if today == a.date:
+                appointmentsToday.append(a)
+                
+        return appointmentsToday
+    
+    
+class AppointmentData():
+    
+    def __init__(self, date, time, title, member):
+    
+        self.date = date
+        self.time = time
+        self.datetime = date + ' ' + time
+        self.title = title
+        self.member = member
+    

@@ -55,11 +55,12 @@ class DashboardApp(App):
     
     def __updateItems(self, dt):
         self.overview.updateDateTime()
-        self.schedule.handleScheduleDisplay()  
-        if self.appointments.due():
-            self.appointmentsItem.title = 'Termin >>>heute<<<'
-        else:
+        self.schedule.handleScheduleDisplay()
+        dueAppointments = self.appointments.due()
+        if not dueAppointments:
             self.appointmentsItem.title = 'Termine'
+        else:
+            self.appointmentsItem.title = 'Termin(e) >>heute<<'
         
     def closeApp(self, instance):
         self.stop()
