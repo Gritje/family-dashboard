@@ -21,7 +21,8 @@ class DashboardApp(App):
         self.root = Accordion()
         
         self.overviewItem = AccordionItem(title='Uebersicht')
-        self.overviewItem.add_widget(Overview())
+        self.overview = Overview()
+        self.overviewItem.add_widget(self.overview)
         self.root.add_widget(self.overviewItem)
       
         self.scheduleItem = AccordionItem(title='Stundenplan')
@@ -53,7 +54,8 @@ class DashboardApp(App):
         return self.root
     
     def __updateItems(self, dt):
-        self.schedule.updateDateTime()
+        self.overview.updateDateTime()
+        self.schedule.handleScheduleDisplay()  
         if self.appointments.due():
             self.appointmentsItem.title = 'Termin >>>heute<<<'
         else:

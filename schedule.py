@@ -14,17 +14,6 @@ class Schedule(BoxLayout):
         self.orientation='vertical'
         self.scheduleTable = ScheduleTable()
         self.add_widget(self.scheduleTable)
-        self.dateTimeLabel = Label(text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]', font_size='32sp', markup = True)
-        self.add_widget(self.dateTimeLabel)
-        
-   
-    def __getDateTime(self):
-        currentDay = time.strftime("%A")
-        #dayToGermanDayMap = {'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch', 'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Sonnabend', 'Sunday': 'Sonntag'}
-        #germanDay = dayToGermanDayMap.get(currentDay)
-        #formattedDateTime = germanDay + ', ' + time.strftime("%d.%m.%Y %I:%M")
-        formattedDateTime = currentDay + ', ' + time.strftime("%d.%m.%Y %I:%M")
-        return formattedDateTime
     
     def __isWeekend(self):
         weekday = time.strftime("%w") # 0 = Sunday
@@ -36,13 +25,9 @@ class Schedule(BoxLayout):
         else:
             self.scheduleTable.opacity = 1
             
-    def __handleScheduleDisplay(self):
+    def handleScheduleDisplay(self):
         self.__hideScheduleTable(self.__isWeekend())
             
-    
-    def updateDateTime(self):
-        self.dateTimeLabel.text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]'
-        self.__handleScheduleDisplay()
     
 class ScheduleTable(GridLayout):
     
