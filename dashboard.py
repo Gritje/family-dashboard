@@ -9,6 +9,7 @@ from kivy.app import App
 from kivy.uix.accordion import Accordion, AccordionItem
 from kivy.uix.button import Button
 
+from overview import Overview
 from feeds import Feeds
 from appointments import Appointments
 from schedule import Schedule
@@ -17,7 +18,11 @@ from pictureFrame import PictureFrame
 class DashboardApp(App):
     
     def build(self):
-        self.root = Accordion()    
+        self.root = Accordion()
+        
+        self.overviewItem = AccordionItem(title='Uebersicht')
+        self.overviewItem.add_widget(Overview())
+        self.root.add_widget(self.overviewItem)
       
         self.scheduleItem = AccordionItem(title='Stundenplan')
         self.schedule = Schedule()

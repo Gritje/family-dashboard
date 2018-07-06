@@ -170,7 +170,7 @@ class Appointments(BoxLayout):
         connection.close()
      
     def getColorForName(self, name):
-        nameToColorMap = {'pa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
+        nameToColorMap = {'Papa': '#00ffff', 'Mama': '#ff6699', 'Oma': '#ffff00', 'Fiete': '#33cc33'}
         return nameToColorMap.get(name)                
 
     def deleteAppointmentCallback(self, rowId, *args):
