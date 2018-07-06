@@ -61,6 +61,7 @@ class DashboardApp(App):
             self.appointmentsItem.title = 'Termine'
         else:
             self.appointmentsItem.title = 'Termin(e) >>heute<<'
+            self.overview.updateAppointmentTile(dueAppointments)
         
     def closeApp(self, instance):
         self.stop()
