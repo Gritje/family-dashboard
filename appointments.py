@@ -1,5 +1,8 @@
 import sqlite3
 import time
+from datetime import datetime
+from datetime import timedelta
+from datetime import date
 import kivy
 
 from kivy.core.window import Window
@@ -132,6 +135,7 @@ class Appointments(BoxLayout):
         self.grid.row_default_height=40
         self.add_widget(self.grid)
         self.__appointments = []
+        self.__reminders = []
         self.refreshData()
 
     def refreshData(self):
@@ -162,10 +166,16 @@ class Appointments(BoxLayout):
             
         cursor.execute("SELECT * FROM Reminder ORDER BY startdate DESC")
         
+        self.__reminders = []
+        
         for row in cursor:
-            self.grid.add_widget(Label(text= str(row[1]))) #date
-            self.grid.add_widget(Label(text= str(row[2]))) #reminder 
-            self.grid.add_widget(Label(text= str(row[3]) + ' Wochen')) #interval in weeks
+            startDate = str(row[1])
+            text = str(row[2])
+            intervalInWeeks = str(row[3])
+            self.__reminders.append(ReminderData(startDate, text, intervalInWeeks))
+            self.grid.add_widget(Label(text= startDate)) 
+            self.grid.add_widget(Label(text= text))  
+            self.grid.add_widget(Label(text= intervalInWeeks + ' Woche(n)'))
             deleteReminderButton = Button(text='[color=#ff0000]X[/color]', size=(40, 40), size_hint=(None, None), markup = True)
             deleteReminderButton.bind(on_press=partial(self.deleteReminderCallback, row[0])) #id 
             self.grid.add_widget(deleteReminderButton)            
@@ -206,6 +216,19 @@ class Appointments(BoxLayout):
                 
         return appointmentsToday
     
+    def remind(self):
+        today = datetime.strptime(time.strftime("%Y-%m-%d"), "%Y-%m-%d")        
+        remindersToday = []
+        
+        for r in self.__reminders:
+            reminderStart = datetime.strptime(r.startDate, "%Y-%m-%d")
+            while reminderStart <= today:
+                if today == reminderStart:
+                    remindersToday.append(r)
+                reminderStart = reminderStart + timedelta(days=7)                
+                
+        return remindersToday        
+    
     
 class AppointmentData():
     
@@ -216,4 +239,12 @@ class AppointmentData():
         self.datetime = date + ' ' + time
         self.title = title
         self.member = member
+        
+class ReminderData():
+    
+    def __init__(self, startDate, text, intervalInWeeks):
+    
+        self.startDate = startDate
+        self.text = text
+        self.intervalInWeeks = intervalInWeeks        
     

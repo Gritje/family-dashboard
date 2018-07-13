@@ -19,7 +19,8 @@ class Overview(GridLayout):
         self.appointmentTile = AppointmentTile()
         self.add_widget(self.appointmentTile)
         
-        self.add_widget(Label(text='Platzhalter'))
+        self.reminderTile = ReminderTile()
+        self.add_widget(self.reminderTile)
         
     def __getDateTime(self):
         currentDay = time.strftime("%A")
@@ -35,7 +36,12 @@ class Overview(GridLayout):
     def updateAppointmentTile(self, dueAppointments):
         self.appointmentTile.clear_widgets()
         for a in dueAppointments:
-            self.appointmentTile.addAppointment(a)     
+            self.appointmentTile.addAppointment(a)
+            
+    def updateReminderTile(self, dueReminders):
+        self.reminderTile.clear_widgets()
+        for r in dueReminders:
+            self.reminderTile.addReminder(r)
         
 
 class AppointmentTile(GridLayout):
@@ -51,3 +57,15 @@ class AppointmentTile(GridLayout):
         self.add_widget(Label(text= appointment.time))
         self.add_widget(Label(text= appointment.title)) 
         self.add_widget(Label(text= appointment.member))
+        
+class ReminderTile(GridLayout):
+    
+    def __init__(self, **kwargs):
+        super(ReminderTile, self).__init__(**kwargs)
+    
+        self.cols = 1
+        self.row_force_default=True
+        self.row_default_height=20
+        
+    def addReminder(self, reminder):
+        self.add_widget(Label(text= reminder.text)) 

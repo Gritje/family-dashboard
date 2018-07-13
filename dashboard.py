@@ -62,6 +62,10 @@ class DashboardApp(App):
         else:
             self.appointmentsItem.title = 'Termin(e) >>heute<<'
             self.overview.updateAppointmentTile(dueAppointments)
+            
+        dueReminders = self.appointments.remind()
+        if dueReminders:
+            self.overview.updateReminderTile(dueReminders)    
         
     def closeApp(self, instance):
         self.stop()
