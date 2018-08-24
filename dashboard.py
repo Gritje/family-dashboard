@@ -36,7 +36,8 @@ class DashboardApp(App):
         self.root.add_widget(self.appointmentsItem)
 
         self.newsItem = AccordionItem(title='Nachrichten')
-        self.newsItem.add_widget(Feeds())
+        self.news = Feeds()
+        self.newsItem.add_widget(self.news)
         self.root.add_widget(self.newsItem)
 
         self.pictureItem = AccordionItem(title='Bilder')
@@ -55,6 +56,7 @@ class DashboardApp(App):
     
     def __updateItems(self, dt):
         self.overview.updateDateTime()
+        self.news.refreshFeeds()
         self.schedule.handleScheduleDisplay()
         dueAppointments = self.appointments.due()
         if not dueAppointments:

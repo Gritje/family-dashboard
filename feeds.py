@@ -13,10 +13,14 @@ class Feeds(BoxLayout):
         self.orientation='vertical'
         self.spacing=10
         
+        self.refreshFeeds()     
+        
+    def refreshFeeds(self):
+        self.clear_widgets()
         self.sponFeed = feedparser.parse('http://www.spiegel.de/schlagzeilen/tops/index.rss')
         self.trainFeed = feedparser.parse('https://www.deutschebahn.com/service/rss/pr-hamburg-de/1309346/feed.rss')
         self.__feeds(self.sponFeed, 'Nachrichten')        
-        self.__feeds(self.trainFeed, 'Bahn')
+        self.__feeds(self.trainFeed, 'Bahn')        
     
     def __feeds(self, feed, headline):
         
