@@ -17,28 +17,31 @@ class Feeds(BoxLayout):
         self.trainFeed = feedparser.parse('https://www.deutschebahn.com/service/rss/pr-hamburg-de/1309346/feed.rss')
         self.__feeds(self.sponFeed, 'Nachrichten')        
         self.__feeds(self.trainFeed, 'Bahn')
-        
-
+    
     def __feeds(self, feed, headline):
         
         self.add_widget(Label(text = '[b][color=#00ffff]' + headline + '[/color][/b]', size=(600, 40), size_hint=(None, None), font_size='32sp', markup = True))
         
-        spinnerList = []
-        for post in feed.entries:
-            spinnerList.append(post.title)
+        if not feed.entries:
+            self.add_widget(Label(text = 'Keine Internetverbindung - Daten koennen nicht abgerufen werden'))
+        else:
+        
+            spinnerList = []
+            for post in feed.entries:
+                spinnerList.append(post.title)
 
-        feedDescriptionLabel = Label(text = feed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
-        feedDescriptionLabel.text_size = feedDescriptionLabel.size
-        
-        feedSpinner = Spinner(text=feed.entries[0].title, values=spinnerList)
-        
-        def show_selected_value(feedSpinner, text):
-            feedDescriptionLabel.text = self.__getFeedDescription(feed, text)
+            feedDescriptionLabel = Label(text = feed.entries[0].description, size=(600, 100), size_hint=(None, None), halign = 'left', valign = 'middle')
+            feedDescriptionLabel.text_size = feedDescriptionLabel.size
             
-        feedSpinner.bind(text=show_selected_value)
+            feedSpinner = Spinner(text=feed.entries[0].title, values=spinnerList)
+            
+            def show_selected_value(feedSpinner, text):
+                feedDescriptionLabel.text = self.__getFeedDescription(feed, text)
+                
+            feedSpinner.bind(text=show_selected_value)
 
-        self.add_widget(feedSpinner)
-        self.add_widget(feedDescriptionLabel)
+            self.add_widget(feedSpinner)
+            self.add_widget(feedDescriptionLabel)
         
     def __getFeedDescription(self, feed, text):
         description = ''
