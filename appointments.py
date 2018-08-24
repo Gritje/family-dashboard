@@ -38,17 +38,19 @@ class NewAppointmentPopup(Popup):
         self._memberLayout.add_widget(self._memberButton3)
         self._memberLayout.add_widget(self._memberButton4)      
         self._saveButton = Button(text='Speichern')
+        self._cancelButton = Button(text='Abbrechen')        
         
         self._popupLayout.add_widget(self._datetimePicker)
         self._popupLayout.add_widget(self._appointmentTitleInput)
         self._popupLayout.add_widget(self._memberLayout)
         self._popupLayout.add_widget(self._saveButton)
+        self._popupLayout.add_widget(self._cancelButton)
         
         self.title='Neuer Termin:'
         self.content=self._popupLayout
         self.auto_dismiss=False
-        self.bind(on_dismiss=self._newAppointmentCallback)
-        self._saveButton.bind(on_press=self.dismiss)
+        self._saveButton.bind(on_press=self._newAppointmentCallback)
+        self._cancelButton.bind(on_press=self.dismiss)
         
     def _newAppointmentCallback(self, *args):
         appointment = self._appointmentTitleInput.text
@@ -72,6 +74,7 @@ class NewAppointmentPopup(Popup):
         connection.commit()
         connection.close()
         self._root.refreshData()
+        self.dismiss()
         
 class NewReminderPopup(Popup):
 
@@ -85,17 +88,19 @@ class NewReminderPopup(Popup):
         self._starttimePicker = DatetimePicker()
         self._reminderTitleInput = TextInput(text='Was?', multiline=False)
         self._saveButton = Button(text='Speichern')
+        self._cancelButton = Button(text='Abbrechen')
         self._interval = TextInput(text='1', multiline=False)
         self._popupLayout.add_widget(self._starttimePicker)
         self._popupLayout.add_widget(self._reminderTitleInput)
         self._popupLayout.add_widget(self._interval)
         self._popupLayout.add_widget(self._saveButton)
+        self._popupLayout.add_widget(self._cancelButton)
         
         self.title='Neue Erinnerung:'
         self.content=self._popupLayout
         self.auto_dismiss=False
-        self.bind(on_dismiss=self._newReminderCallback)
-        self._saveButton.bind(on_press=self.dismiss)
+        self._saveButton.bind(on_press=self._newReminderCallback)
+        self._cancelButton.bind(on_press=self.dismiss)
         
     def _newReminderCallback(self, *args):
         startTime = self._starttimePicker.get_datetime()
@@ -111,6 +116,7 @@ class NewReminderPopup(Popup):
         connection.commit()
         connection.close()
         self._root.refreshData()
+        self.dismiss()
 
 class Appointments(BoxLayout):
     
