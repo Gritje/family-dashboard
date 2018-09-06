@@ -55,6 +55,7 @@ class DashboardApp(App):
     
     def __updateItems(self, dt):
         self.overview.updateDateTime()
+        self.overview.updateWeather()
         self.news.refreshFeeds()
         self.schedule.handleScheduleDisplay()
         dueAppointments = self.appointments.due()
