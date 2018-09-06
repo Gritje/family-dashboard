@@ -11,7 +11,7 @@ class PictureFrame(BoxLayout):
     def __init__(self, **kwargs):
         super(PictureFrame, self).__init__(**kwargs)
 
-        self.add_widget(Image(source='pics/sommer.jpg'))
+        self.add_widget(Image(source='pics/sommer.jpg', allow_stretch=True))
         #btn = Button(text='Coin')
         #btn.bind(on_press=self.__makeSound)
         #self.add_widget(btn)
