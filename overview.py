@@ -91,5 +91,5 @@ class WeatherTile(GridLayout):
         self._addWeatherData(self.weather.temp, self.weather.picUrl)
         
     def _addWeatherData(self, temp, image):
-        self.add_widget(Label(text= temp + ' C'))
+        self.add_widget(Label(text=u'' + temp + unichr(176) + 'C', font_size='32sp', markup = True))
         self.add_widget(AsyncImage(source=image)) 
