@@ -49,13 +49,21 @@ class DashboardApp(App):
         
         self.scheduleItem.collapse = False
         
-        Clock.schedule_interval(self.__updateItems, 60)
+        # initial weather data
+        self.overview.updateWeather()
+        # continuous updates
+        ONE_MINUTE = 60
+        FOUR_HOURS = 14400
+        Clock.schedule_interval(self.__updateItems, ONE_MINUTE)
+        Clock.schedule_interval(self.__updateWeather, FOUR_HOURS)
         
         return self.root
     
-    def __updateItems(self, dt):
-        self.overview.updateDateTime()
+    def __updateWeather(self, dt):
         self.overview.updateWeather()
+        
+    def __updateItems(self, dt):
+        self.overview.updateDateTime()        
         self.news.refreshFeeds()
         self.schedule.handleScheduleDisplay()
         dueAppointments = self.appointments.due()
