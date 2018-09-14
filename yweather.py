@@ -30,6 +30,6 @@ class YWeather():
         self.temp = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["temp"]
         self.high = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["high"]
         self.low = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["low"]
-        self.weatherText = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["text"]
+        self.weatherText = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["text"]
         self.picUrl = self.textToPicUrlMap.get(self.weatherText)   
 

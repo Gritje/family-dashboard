@@ -3,7 +3,7 @@ import time
 
 from yweather import YWeather
 
-from kivy.uix.image import AsyncImage
+from kivy.uix.image import Image, AsyncImage
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.label import Label
 
@@ -17,7 +17,7 @@ class Overview(GridLayout):
         self.dateTimeTile = Label(text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]', font_size='32sp', markup = True)
         self.add_widget(self.dateTimeTile)
         
-        self.weatherTile = WeatherTile()
+        self.weatherTile = WeatherTile()    
         self.add_widget(self.weatherTile)
         
         self.appointmentTile = AppointmentTile()
@@ -38,6 +38,7 @@ class Overview(GridLayout):
         self.dateTimeTile.text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]'
         
     def updateWeather(self):
+        self.weatherTile.clear_widgets()
         self.weatherTile.updateWeather()
     
     def updateAppointmentTile(self, dueAppointments):
@@ -56,26 +57,28 @@ class AppointmentTile(GridLayout):
     def __init__(self, **kwargs):
         super(AppointmentTile, self).__init__(**kwargs)
     
-        self.cols = 3
+        self.cols = 4
         self.row_force_default=True
         self.row_default_height=20
         
     def addAppointment(self, appointment):
-        self.add_widget(Label(text= appointment.time))
-        self.add_widget(Label(text= appointment.title)) 
-        self.add_widget(Label(text= appointment.member))
+        self.add_widget(Image(source='pics/clock.png', allow_stretch=True))
+        self.add_widget(Label(text= appointment.time, font_size='20sp', markup = True))
+        self.add_widget(Label(text= appointment.title, font_size='20sp', markup = True)) 
+        self.add_widget(Label(text= appointment.member, font_size='20sp', markup = True))
         
 class ReminderTile(GridLayout):
     
     def __init__(self, **kwargs):
         super(ReminderTile, self).__init__(**kwargs)
     
-        self.cols = 1
+        self.cols = 2
         self.row_force_default=True
         self.row_default_height=20
         
     def addReminder(self, reminder):
-        self.add_widget(Label(text= reminder.text))
+        self.add_widget(Image(source='pics/birne.png', allow_stretch=True))
+        self.add_widget(Label(text= reminder.text, font_size='20sp', markup = True))
         
 class WeatherTile(GridLayout):
     
@@ -83,13 +86,12 @@ class WeatherTile(GridLayout):
         super(WeatherTile, self).__init__(**kwargs)
     
         self.cols = 2
-        self.row_force_default=True
-        self.row_default_height=20
+        #self.row_force_default=True
+        #self.row_default_height=20
         
     def updateWeather(self):
         self.weather = YWeather()
-        self._addWeatherData(self.weather.temp, self.weather.picUrl)
-        
-    def _addWeatherData(self, temp, image):
-        self.add_widget(Label(text=u'' + temp + unichr(176) + 'C', font_size='32sp', markup = True))
-        self.add_widget(AsyncImage(source=image)) 
+        self.add_widget(Label(text=u'' + self.weather.temp + unichr(176) + 'C', font_size='32sp', markup = True))
+        self.add_widget(AsyncImage(source=self.weather.picUrl))
+        self.add_widget(Label(text=u'' + self.weather.low + unichr(176) + 'C', font_size='16sp', markup = True))
+        self.add_widget(Label(text=u'' + self.weather.high + unichr(176) + 'C', font_size='16sp', markup = True))

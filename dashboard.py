@@ -20,12 +20,12 @@ class DashboardApp(App):
     def build(self):
         self.root = Accordion()
         
-        self.overviewItem = AccordionItem(title='Uebersicht')
+        self.overviewItem = AccordionItem(title=unichr(252) + 'bersicht')
         self.overview = Overview()
         self.overviewItem.add_widget(self.overview)
-        self.closeButton = Button(text = 'Beenden', size=(100, 50), size_hint=(None, None), background_color=[1,0,0,1])
-        self.closeButton.bind(on_press=self.closeApp)
-        self.overviewItem.add_widget(self.closeButton)
+        #self.closeButton = Button(text = 'Beenden', size=(100, 50), size_hint=(None, None), background_color=[1,0,0,1])
+        #self.closeButton.bind(on_press=self.closeApp)
+        #self.overviewItem.add_widget(self.closeButton)
         self.root.add_widget(self.overviewItem)
       
         self.scheduleItem = AccordionItem(title='Stundenplan')
