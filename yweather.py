@@ -27,13 +27,14 @@ class YWeather():
         try:
         
             self.response = requests.get('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22luebeck%22)%20and%20u%3D%22c%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys')
-            #print(response.text)
-            self.parsed_json = json.loads(self.response.text)
-            self.temp = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["temp"]
-            self.high = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["high"]
-            self.low = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["low"]
-            self.weatherText = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["text"]
-            self.picUrl = self.textToPicUrlMap.get(self.weatherText)   
+            
+            if self.response.status_code == 200 :
+                self.parsed_json = json.loads(self.response.text)
+                self.temp = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["temp"]
+                self.high = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["high"]
+                self.low = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["low"]
+                self.weatherText = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["text"]
+                self.picUrl = self.textToPicUrlMap.get(self.weatherText)   
 
         except Exception as e:
             print(type(e))
