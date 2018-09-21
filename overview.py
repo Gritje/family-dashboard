@@ -63,9 +63,9 @@ class AppointmentTile(GridLayout):
         
     def addAppointment(self, appointment):
         self.add_widget(Image(source='pics/clock.png', allow_stretch=True))
-        self.add_widget(Label(text= appointment.time, font_size='20sp', markup = True))
-        self.add_widget(Label(text= appointment.title, font_size='20sp', markup = True)) 
-        self.add_widget(Label(text= appointment.member, font_size='20sp', markup = True))
+        self.add_widget(Label(text= appointment.time, font_size='20sp', halign = 'left', markup = True))
+        self.add_widget(Label(text= appointment.title, font_size='20sp', halign = 'left', markup = True)) 
+        self.add_widget(Label(text= appointment.member, font_size='20sp', halign = 'left', markup = True))
         
 class ReminderTile(GridLayout):
     
@@ -78,7 +78,7 @@ class ReminderTile(GridLayout):
         
     def addReminder(self, reminder):
         self.add_widget(Image(source='pics/birne.png', allow_stretch=True))
-        self.add_widget(Label(text= reminder.text, font_size='20sp', markup = True))
+        self.add_widget(Label(text= reminder.text, font_size='20sp', halign = 'left', markup = True))
         
 class WeatherTile(GridLayout):
     
@@ -93,5 +93,5 @@ class WeatherTile(GridLayout):
         self.weather = YWeather()
         self.add_widget(Label(text=u'' + self.weather.temp + unichr(176) + 'C', font_size='32sp', markup = True))
         self.add_widget(AsyncImage(source=self.weather.picUrl))
-        self.add_widget(Label(text=u'' + self.weather.low + unichr(176) + 'C', font_size='16sp', markup = True))
-        self.add_widget(Label(text=u'' + self.weather.high + unichr(176) + 'C', font_size='16sp', markup = True))
+        self.add_widget(Label(text=u'' + self.weather.low + unichr(176) + 'C', font_size='16sp', valign = 'top', markup = True))
+        self.add_widget(Label(text=u'' + self.weather.high + unichr(176) + 'C', font_size='16sp', valign = 'top', markup = True))
