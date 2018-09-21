@@ -11,7 +11,7 @@ class Schedule(BoxLayout):
     def __init__(self, **kwargs):
         super(Schedule, self).__init__(**kwargs)
         
-        self.orientation='vertical'
+        self.orientation = 'vertical'
         self.scheduleTable = ScheduleTable()
         self.add_widget(self.scheduleTable)
     
@@ -34,9 +34,9 @@ class ScheduleTable(GridLayout):
     def __init__(self, **kwargs):
         super(ScheduleTable, self).__init__(**kwargs)
         
-        self.cols=6
-        self.row_force_default=True
-        self.row_default_height=40
+        self.cols = 6
+        self.row_force_default = True
+        self.row_default_height = 40
         
         self.add_widget(Label(text= '[b]Zeit[/b]', size_hint_x=None, width=100, markup = True))
         self.add_widget(Label(text='[color=#ff4d4d][b]Montag[/b][/color]', size_hint_x=None, width=100, markup = True))
