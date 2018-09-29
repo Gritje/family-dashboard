@@ -1,4 +1,43 @@
 # Family Dashboard
 
-... running on RaspberryPi with touch display.
-... based on Python and Kivy.
+The dashboard contains a school schedule, appointments and reminders, news feeds and can be used as a picture frame.
+An overview aggregates current appointments, shows date, time an weather data.
+
+The intention next to having a family dashboard is to learn Python.
+
+## Getting Started
+
+### Prerequisites
+
+You need to install Kivy.
+You need to install some additional Python modules.
+    
+```
+TBC
+```
+
+### Installing
+
+The following Python modules need to be installed:
+
+```
+pip ...
+```
+
+Start the dashboard by
+
+```
+python dashboard.py
+```
+
+## Running the tests
+
+python unittest
+
+## Deployment
+
+The family dashboard runs on a RaspberryPi 3 with a touch display.
+
+## Authors
+
+* **Gritje** - [PurpleBooth](https://github.com/Gritje)
