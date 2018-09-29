@@ -38,7 +38,7 @@ python unittest
 
 The family dashboard runs on a RaspberryPi 3 with a touch display.
 
-To use the picture frame funtion, add your pictures to subfolder
+To use the picture frame function, add your pictures to subfolder
 ```
 pics/frame
 ```
