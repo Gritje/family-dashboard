@@ -40,4 +40,4 @@ The family dashboard runs on a RaspberryPi 3 with a touch display.
 
 ## Authors
 
-* **Gritje** - [PurpleBooth](https://github.com/Gritje)
+* [Gritje](https://github.com/Gritje)
