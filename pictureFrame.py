@@ -1,4 +1,6 @@
 import kivy
+import os
+import random
 
 from pygame import mixer
 
@@ -11,12 +13,14 @@ class PictureFrame(BoxLayout):
     def __init__(self, **kwargs):
         super(PictureFrame, self).__init__(**kwargs)
 
-        self.add_widget(Image(source='pics/sommer.jpg', allow_stretch=True))
-        #btn = Button(text='Coin')
-        #btn.bind(on_press=self.__makeSound)
-        #self.add_widget(btn)
+        self.image = Image(source = self.__getRandomPicture(), allow_stretch=True)
+        self.add_widget(self.image)
+         
+    def __getRandomPicture(self):
+        pictures = os.listdir('pics/frame')
+        r = random.randint(0,len(pictures)-1)
+        return 'pics/frame/' + pictures[r]    
         
-    #def __makeSound(self, instance):
-    #    mixer.init()
-    #    mixer.music.load('Mario-coin-sound.mp3')
-    #    mixer.music.play()
+    def updateRandomPicture(self):
+        self.image.source = self.__getRandomPicture()
+        self.image.reload()

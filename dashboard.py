@@ -44,7 +44,8 @@ class DashboardApp(App):
         self.root.add_widget(self.newsItem)
 
         self.pictureItem = AccordionItem(title='Bilder')
-        self.pictureItem.add_widget(PictureFrame())    
+        self.pictureFrame = PictureFrame()
+        self.pictureItem.add_widget(self.pictureFrame)    
         self.root.add_widget(self.pictureItem)
         
         self.scheduleItem.collapse = False
@@ -65,6 +66,7 @@ class DashboardApp(App):
     def __updateItems(self, dt):
         self.overview.updateDateTime()        
         self.news.refreshFeeds()
+        self.pictureFrame.updateRandomPicture()
         self.schedule.handleScheduleDisplay()
         dueAppointments = self.appointments.due()
         if not dueAppointments:
