@@ -1,6 +1,7 @@
 freezegun
-Cython
-kivy
+Cython==0.25.2
+Kivy==1.10.0
 requests
 time
 json
+
