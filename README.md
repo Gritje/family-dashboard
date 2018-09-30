@@ -32,7 +32,12 @@ python dashboard.py
 
 ## Running the tests
 
-python unittest
+```
+python -m unittest discover -v
+```
+
+### Travis CI Build Status
+[![Build Status](https://travis-ci.com/Gritje/family-dashboard.svg?branch=master)](https://travis-ci.com/Gritje/family-dashboard)
 
 ## Deployment
 
