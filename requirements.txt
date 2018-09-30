@@ -1,4 +1,5 @@
 freezegun
+Cython
 kivy
 requests
 time
