@@ -1,1 +1,5 @@
 freezegun
+kivy
+requests
+time
+json
