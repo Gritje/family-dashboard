@@ -13,12 +13,13 @@ from overview import Overview
 from feeds import Feeds
 from appointments import Appointments
 from schedule import Schedule
+from todoList import TodoList
 from pictureFrame import PictureFrame
 
 class DashboardApp(App):
     
     def build(self):
-        self.root = Accordion()
+        self.root = Accordion(min_space=30)
         
         self.overviewItem = AccordionItem(title=unichr(252) + 'bersicht')
         self.overview = Overview()
@@ -37,6 +38,11 @@ class DashboardApp(App):
         self.appointments = Appointments()
         self.appointmentsItem.add_widget(self.appointments)
         self.root.add_widget(self.appointmentsItem)
+        
+        self.todoListItem = AccordionItem(title='Haushalts-Abenteuer')
+        self.todoList = TodoList()
+        self.todoListItem.add_widget(self.todoList)
+        self.root.add_widget(self.todoListItem)
 
         self.newsItem = AccordionItem(title='Nachrichten')
         self.news = Feeds()
