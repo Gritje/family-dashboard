@@ -26,16 +26,17 @@ class Overview(GridLayout):
         self.reminderTile = ReminderTile()
         self.add_widget(self.reminderTile)
         
+        
     def __getDateTime(self):
         currentDay = time.strftime("%A")
         #dayToGermanDayMap = {'Monday': 'Montag', 'Tuesday': 'Dienstag', 'Wednesday': 'Mittwoch', 'Thursday': 'Donnerstag', 'Friday': 'Freitag', 'Saturday': 'Sonnabend', 'Sunday': 'Sonntag'}
         #germanDay = dayToGermanDayMap.get(currentDay)
         #formattedDateTime = germanDay + ', ' + time.strftime("%d.%m.%Y %I:%M")
-        formattedDateTime = currentDay + ', \n' + time.strftime("%d.%m.%Y %I:%M")
+        formattedDateTime = currentDay + ', \n' + time.strftime("%d.%m.%Y %H:%M")
         return formattedDateTime        
         
     def updateDateTime(self):
-        self.dateTimeTile.text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]'
+        self.dateTimeTile.text = '[b][color=#00ffff]' + self.__getDateTime() + '[/color][/b]'     
         
     def updateWeather(self):
         self.weatherTile.clear_widgets()

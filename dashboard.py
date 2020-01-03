@@ -1,4 +1,7 @@
 import kivy
+import time
+
+from ledmatrix import LedMatrix
 
 from kivy.config import Config
 Config.set('kivy', 'keyboard_mode', 'systemandmulti')
@@ -56,11 +59,15 @@ class DashboardApp(App):
         
         self.scheduleItem.collapse = False
         
+        self.ledClock = LedMatrix()
+
         # initial weather data
         self.overview.updateWeather()
         # continuous updates
+        EACH_SECOND = 1
         ONE_MINUTE = 60
         FOUR_HOURS = 14400
+        Clock.schedule_interval(self.__updateLedClock, EACH_SECOND)
         Clock.schedule_interval(self.__updateItems, ONE_MINUTE)
         Clock.schedule_interval(self.__updateWeather, FOUR_HOURS)
         
@@ -68,6 +75,9 @@ class DashboardApp(App):
     
     def __updateWeather(self, dt):
         self.overview.updateWeather()
+               
+    def __updateLedClock(self, dt):
+        self.ledClock.updateLedDisplay(time.strftime("%H:%M:%S"))
         
     def __updateItems(self, dt):
         self.overview.updateDateTime()        
