@@ -8,16 +8,17 @@ class YWeather():
         self.temp = '?'
         self.high = '?'
         self.low = '?'
-        self.weatherText = 'Sunny'
+        self.weatherText = 'clear'
         self.picUrl = '?'
         
-        self.textToPicUrlMap = {'' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/rain_day_night@2x.png',
-            'Partly Cloudy' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/partly_cloudy_day@2x.png',
-            'Mostly Cloudy' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/mostly_cloudy_day_night@2x.png',
-            'Cloudy' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/cloudy_day_night@2x.png',
-            'Sunny' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/clear_day@2x.png',
-            'Fair' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/fair_day@2x.png',
-            'Showers' : 'https://s.yimg.com/os/weather/1.0.1/shadow_icon/60x60/rain_day_night@2x.png'}
+        self.textToPicUrlMap = {'' : 'http://www.7timer.info/img/misc/about_two_clear.png',
+            'clear' : 'http://www.7timer.info/img/misc/about_two_clear.png',
+            'mcloudy' : 'http://www.7timer.info/img/misc/about_two_pcloudy.png',
+            'cloudy' : 'http://www.7timer.info/img/misc/about_two_cloudy.png',
+            'rain' : 'http://www.7timer.info/img/misc/about_two_rain.png',
+            'snow' : 'http://www.7timer.info/img/misc/about_two_snow.png',
+            'ts' : 'http://www.7timer.info/img/misc/about_two_ts.png',
+            'tsrain' : 'http://www.7timer.info/img/misc/about_two_tsrain.png'}
         
         self.fetchWeatherData()
         
@@ -25,7 +26,7 @@ class YWeather():
         
         try:
         
-            self.response = requests.get('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20weather.forecast%20where%20woeid%20in%20(select%20woeid%20from%20geo.places(1)%20where%20text%3D%22luebeck%22)%20and%20u%3D%22c%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys')
+            self.response = requests.get('http://www.7timer.info/bin/civillight.php?lon=10.7&lat=53.9&ac=0&unit=metric&output=json')
             
             if self.response.status_code == 200 :
                 self.parseWeather(self.response.text)                  
@@ -37,9 +38,9 @@ class YWeather():
 
     def parseWeather(self, weatherJson):
         self.parsed_json = json.loads(weatherJson)
-        self.temp = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["temp"]
-        self.high = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["high"]
-        self.low = self.parsed_json["query"]["results"]["channel"]["item"]["forecast"][0]["low"]
-        self.weatherText = self.parsed_json["query"]["results"]["channel"]["item"]["condition"]["text"]
-        self.picUrl = self.textToPicUrlMap.get(self.weatherText)
+        self.temp = str(self.parsed_json["dataseries"][0]["temp2m"]["max"])
+        self.high = str(self.parsed_json["dataseries"][0]["temp2m"]["max"])
+        self.low = str(self.parsed_json["dataseries"][0]["temp2m"]["min"])
+        self.weatherText = self.parsed_json["dataseries"][0]["weather"]
+        self.picUrl = self.textToPicUrlMap.get(self.weatherText)    
         
